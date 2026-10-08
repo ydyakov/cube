@@ -653,3 +653,6 @@ a { color: inherit; }
 @media (max-width: 480px) {
   .topbar__nav .nav-extra { display: none; }
 }
+
+.resource { margin: .75rem 0 0; font-size: .92rem; color: var(--muted); }
+.resource a { color: var(--purple); font-weight: 700; }
