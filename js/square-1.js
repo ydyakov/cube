@@ -176,12 +176,12 @@
       left:   { "*": GRAY, "top-r": "var(--red)" }
     },
     // цветен пъзел: десните ръбове (горе и долу) са червени отстрани,
-    // задните ръбове (горе и долу) са зелени; задната страна и техните капачета са сиви
+    // задните ръбове (горе и долу) са зелени на червена задна страна; капачетата им са сиви
     edgePerm: {
       top:    { "*": "var(--white)", "edge-back": GRAY, "edge-right": GRAY },
       bottom: { "*": "var(--yellow)", "edge-front": GRAY, "edge-right": GRAY },
       front:  "var(--orange)",
-      back:   { "*": GRAY, "top-edge": "var(--green)", "bot-edge": "var(--green)" },
+      back:   { "*": "var(--red)", "top-edge": "var(--green)", "bot-edge": "var(--green)" },
       right:  { "*": "var(--green)", "top-edge": "var(--red)", "bot-edge": "var(--red)" },
       left:   "var(--blue)"
     }
