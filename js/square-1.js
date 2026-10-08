@@ -161,14 +161,17 @@
     },
     // двата предни ъгъла в горния слой (червен вляво, син вдясно)
     cornerPerm: {
-      top:    { "*": GRAY, "corner-fl": "var(--red)", "edge-front": "var(--red)", "corner-fr": "var(--blue)" },
+      top:    {
+        "*": GRAY, "corner-fl": "var(--red)", "edge-front": "var(--red)",
+        "corner-fr": "var(--blue)", "edge-right": "var(--blue)"
+      },
       bottom: GRAY,
       front:  {
         "*": GRAY, "mid-l": "var(--orange)", "mid-r": "var(--orange)",
         "top-l": "var(--red)", "top-edge": "var(--red)", "top-r": "var(--blue)"
       },
       back:   GRAY,
-      right:  { "*": GRAY, "mid": "var(--green)", "top-l": "var(--blue)" },
+      right:  { "*": GRAY, "mid": "var(--green)", "top-l": "var(--blue)", "top-edge": "var(--blue)" },
       left:   { "*": GRAY, "top-r": "var(--red)" }
     },
     // цветен пъзел: двата ръба с червено отгоре и синьото долу вдясно
