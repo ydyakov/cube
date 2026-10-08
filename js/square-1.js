@@ -148,6 +148,7 @@
   // Моделите за стъпките: сив пъзел, оранжев/зелен среден слой за ориентация,
   // а парчетата, които алгоритъмът мести, са оцветени.
   // На лявата стена "top-r" е предната част, на дясната "top-l" (виж ориентацията на стените).
+  // На долната стена "-front"/"-back" са огледални: "edge-front" там е задният ръб.
   var GRAY = "var(--sq1-gray)";
   var MODELS = {
     // двата десни ръба (горен и долен)
@@ -174,13 +175,14 @@
       right:  { "*": GRAY, "mid": "var(--green)", "top-l": "var(--blue)", "top-edge": "var(--blue)" },
       left:   { "*": GRAY, "top-r": "var(--red)" }
     },
-    // цветен пъзел: двата ръба с червено отгоре и синьото долу вдясно
+    // цветен пъзел: десните ръбове (горе и долу) са червени отстрани,
+    // задните ръбове (горе и долу) са зелени; задната страна и техните капачета са сиви
     edgePerm: {
-      top:    { "*": "var(--white)", "edge-back": "var(--red)", "edge-right": "var(--red)" },
-      bottom: "var(--yellow)",
+      top:    { "*": "var(--white)", "edge-back": GRAY, "edge-right": GRAY },
+      bottom: { "*": "var(--yellow)", "edge-front": GRAY, "edge-right": GRAY },
       front:  "var(--orange)",
-      back:   "var(--red)",
-      right:  { "*": "var(--green)", "bot-edge": "var(--blue)" },
+      back:   { "*": GRAY, "top-edge": "var(--green)", "bot-edge": "var(--green)" },
+      right:  { "*": "var(--green)", "top-edge": "var(--red)", "bot-edge": "var(--red)" },
       left:   "var(--blue)"
     }
   };
