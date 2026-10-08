@@ -12,6 +12,18 @@
       algos: [
         { label: "Алгоритъм", moves: "(1,0) / (0,-3) / (0,-3) / (-1,-1) / (1,4) / (0,3) /" }
       ],
+      model: "edgeSwap",
+      hint: "Накрая кубчето е отново във форма на куб."
+    },
+    {
+      title: "Пермутация на ъгли",
+      text: "Разменя двата оцветени ъгъла в горния слой: предния ляв (червен) и предния десен (син). " +
+            "<strong>Започни с кубчето във форма на куб, ориентирано като на модела</strong> " +
+            "(оранжевото отпред, зеленото отдясно).",
+      algos: [
+        { label: "Алгоритъм", moves: "(1,0) / (3,-3) / (-3,0) / (0,3) / (0,-3) / (0,3) /" }
+      ],
+      model: "cornerPerm",
       hint: "Накрая кубчето е отново във форма на куб."
     }
   ];
@@ -123,16 +135,32 @@
     });
   }
 
-  // Стъпка 1: сив пъзел, оранжев/зелен среден слой за ориентация,
-  // а двата десни ръба (горен и долен), които се разменят, са оцветени.
+  // Моделите за стъпките: сив пъзел, оранжев/зелен среден слой за ориентация,
+  // а парчетата, които алгоритъмът мести, са оцветени.
+  // На лявата стена "top-r" е предната част, на дясната "top-l" (виж ориентацията на стените).
   var GRAY = "var(--sq1-gray)";
-  var EDGE_SWAP_COLORS = {
-    top:    { "*": GRAY, "edge-right": "var(--yellow)" },
-    bottom: GRAY,
-    front:  { "*": GRAY, "mid-l": "var(--orange)", "mid-r": "var(--orange)" },
-    back:   GRAY,
-    right:  { "*": GRAY, "mid": "var(--green)", "top-edge": "var(--red)", "bot-edge": "var(--red)" },
-    left:   GRAY
+  var MODELS = {
+    // двата десни ръба (горен и долен)
+    edgeSwap: {
+      top:    { "*": GRAY, "edge-right": "var(--yellow)" },
+      bottom: GRAY,
+      front:  { "*": GRAY, "mid-l": "var(--orange)", "mid-r": "var(--orange)" },
+      back:   GRAY,
+      right:  { "*": GRAY, "mid": "var(--green)", "top-edge": "var(--red)", "bot-edge": "var(--red)" },
+      left:   GRAY
+    },
+    // двата предни ъгъла в горния слой (червен вляво, син вдясно)
+    cornerPerm: {
+      top:    { "*": GRAY, "corner-fl": "var(--red)", "edge-front": "var(--red)", "corner-fr": "var(--blue)" },
+      bottom: GRAY,
+      front:  {
+        "*": GRAY, "mid-l": "var(--orange)", "mid-r": "var(--orange)",
+        "top-l": "var(--red)", "top-edge": "var(--red)", "top-r": "var(--blue)"
+      },
+      back:   GRAY,
+      right:  { "*": GRAY, "mid": "var(--green)", "top-l": "var(--blue)" },
+      left:   { "*": GRAY, "top-r": "var(--red)" }
+    }
   };
 
   // 3D модел, който се върти с мишката/пръста (и със стрелките от клавиатурата).
@@ -187,6 +215,6 @@
     storageKey: STORAGE_KEY,
     tokenize: tokenize,
     describe: describeMove,
-    buildVisual: function () { return buildViewer(EDGE_SWAP_COLORS); }
+    buildVisual: function (step) { return buildViewer(MODELS[step.model]); }
   });
 })();
