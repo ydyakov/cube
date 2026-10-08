@@ -153,7 +153,7 @@
     // двата десни ръба (горен и долен)
     edgeSwap: {
       top:    { "*": GRAY, "edge-right": "var(--yellow)" },
-      bottom: GRAY,
+      bottom: { "*": GRAY, "edge-right": "var(--white)" },
       front:  { "*": GRAY, "mid-l": "var(--orange)", "mid-r": "var(--orange)" },
       back:   GRAY,
       right:  { "*": GRAY, "mid": "var(--green)", "top-edge": "var(--red)", "bot-edge": "var(--red)" },
