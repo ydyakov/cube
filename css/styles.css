@@ -14,6 +14,7 @@
   --red: #e2433b;
   --orange: #f28a2e;
   --white: #f4f2f7;
+  --sq1-gray: #cfcdd6;
   --chip: #efeaf8;
   --chip-active: #5b3a96;
   --chip-active-text: #ffffff;
@@ -274,6 +275,7 @@ a { color: inherit; }
 /* Square-1 (стените са SVG от js/square-1.js) */
 .sq1 { animation-duration: 18s; }
 .sq1__face {
+  border: 2px solid #1a1226;
   display: block;
   padding: 0;
   background: #1a1226;
@@ -287,12 +289,44 @@ a { color: inherit; }
   stroke-linecap: round;
 }
 .sq1__svg rect { stroke: #1a1226; stroke-width: 6; }
-.sq1-mini {
-  width: 96px;
-  height: 96px;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 0 0 3px #1a1226;
+.sq1__svg polygon {
+  stroke: #1a1226;
+  stroke-width: 3.2;
+  stroke-linejoin: round;
+}
+
+/* Square-1, който се върти с мишката (стъпка 1) */
+.sq1-viewer {
+  position: relative;
+  width: 150px;
+  height: 190px;
+  padding-bottom: 22px;
+  display: grid;
+  place-items: center;
+  perspective: 700px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  border-radius: 14px;
+}
+.sq1-viewer.is-dragging { cursor: grabbing; }
+.sq1-viewer:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+.sq1-viewer .cube3d {
+  --s: 92px;
+  width: 92px;
+  height: 92px;
+  animation: none;
+}
+.sq1-viewer .sq1__face { border-radius: 6px; }
+.sq1-viewer__hint {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 /* ---------- Catalog (home) ---------- */
@@ -357,7 +391,7 @@ a { color: inherit; }
 }
 .notation__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: .75rem;
   margin-top: 1.5rem;
 }

@@ -6,8 +6,9 @@
   var SQ1_STEPS = [
     {
       title: "Размяна на ръбове между слоевете",
-      text: "Разменя ръб от горния слой с ръб от долния слой. " +
-            "<strong>Започни с кубчето във форма на куб</strong> и разреза отдясно.",
+      text: "Разменя двата оцветени ръба: десния ръб на горния слой и десния ръб на долния слой. " +
+            "<strong>Започни с кубчето във форма на куб, ориентирано като на модела</strong> " +
+            "(оранжевото отпред, зеленото отдясно). Моделът се върти с мишката.",
       algos: [
         { label: "Алгоритъм", moves: "(1,0) / (0,-3) / (0,-3) / (-1,-1) / (1,4) / (0,3) /" }
       ],
@@ -39,73 +40,143 @@
 
   /* ---------- visuals ---------- */
 
-  // Стените са SVG в квадрат 100×100. Ръбовете на Square-1 са клинове от 30°,
+  // Стените са SVG в квадрат 100×100, разделени на отделни парчета (полигони),
+  // за да може всяко да има свой цвят. Ръбовете на Square-1 са клинове от 30°,
   // затова границите им по страната са на 50 ± 50·tan(15°) ≈ 36.6 / 63.4.
   var A = 36.6;
   var B = 63.4;
   var NS = "http://www.w3.org/2000/svg";
 
-  function svg(lines, color) {
+  function rect(x1, y1, x2, y2) {
+    return [[x1, y1], [x2, y1], [x2, y2], [x1, y2]];
+  }
+
+  // Горна/долна стена: 4 ръба (триъгълници) и 4 ъгъла (хвърчила) около центъра.
+  // Имената са спрямо стената: "edge-right" е ръбът към дясната страна (x = 100).
+  var C = [50, 50];
+  var CAP = {
+    "edge-back":    [C, [A, 0], [B, 0]],
+    "edge-right":   [C, [100, A], [100, B]],
+    "edge-front":   [C, [B, 100], [A, 100]],
+    "edge-left":    [C, [0, B], [0, A]],
+    "corner-br":    [C, [B, 0], [100, 0], [100, A]],
+    "corner-fr":    [C, [100, B], [100, 100], [B, 100]],
+    "corner-fl":    [C, [A, 100], [0, 100], [0, B]],
+    "corner-bl":    [C, [0, A], [0, 0], [A, 0]]
+  };
+
+  // Странична стена: горен слой, тънък среден слой, долен слой.
+  // Средният слой е разрязан само отпред и отзад, вляво (там минава разрезът).
+  function sideParts(sliced) {
+    var parts = {
+      "top-l": rect(0, 0, A, 40), "top-edge": rect(A, 0, B, 40), "top-r": rect(B, 0, 100, 40),
+      "bot-l": rect(0, 60, A, 100), "bot-edge": rect(A, 60, B, 100), "bot-r": rect(B, 60, 100, 100)
+    };
+    if (sliced) {
+      parts["mid-l"] = rect(0, 40, A, 60);
+      parts["mid-r"] = rect(A, 40, 100, 60);
+    } else {
+      parts["mid"] = rect(0, 40, 100, 60);
+    }
+    return parts;
+  }
+
+  function faceSvg(parts, colorOf) {
     var s = document.createElementNS(NS, "svg");
     s.setAttribute("viewBox", "0 0 100 100");
     s.setAttribute("class", "sq1__svg");
-    var bg = document.createElementNS(NS, "rect");
-    bg.setAttribute("width", "100");
-    bg.setAttribute("height", "100");
-    bg.setAttribute("style", "fill:" + color);
-    s.appendChild(bg);
-    lines.forEach(function (l) {
-      var line = document.createElementNS(NS, "line");
-      line.setAttribute("x1", l[0]);
-      line.setAttribute("y1", l[1]);
-      line.setAttribute("x2", l[2]);
-      line.setAttribute("y2", l[3]);
-      s.appendChild(line);
+    Object.keys(parts).forEach(function (key) {
+      var poly = document.createElementNS(NS, "polygon");
+      poly.setAttribute("points", parts[key].map(function (p) { return p.join(","); }).join(" "));
+      poly.setAttribute("style", "fill:" + colorOf(key));
+      s.appendChild(poly);
     });
     return s;
   }
 
-  // Горна/долна стена: 4 ъгъла (хвърчила) и 4 ръба (триъгълници) около центъра.
-  function capLines() {
-    return [[A, 0], [B, 0], [100, A], [100, B], [B, 100], [A, 100], [0, B], [0, A]]
-      .map(function (p) { return [50, 50, p[0], p[1]]; });
-  }
+  var FACE_PARTS = {
+    top: CAP, bottom: CAP,
+    front: sideParts(true), back: sideParts(true),
+    right: sideParts(false), left: sideParts(false)
+  };
 
-  // Странична стена: горен слой, тънък среден слой, долен слой.
-  // Средният слой е разрязан само отпред и отзад (там минава разрезът).
-  function sideLines(sliced) {
-    var lines = [
-      [0, 40, 100, 40], [0, 60, 100, 60],
-      [A, 0, A, 40], [B, 0, B, 40],
-      [A, 60, A, 100], [B, 60, B, 100]
-    ];
-    if (sliced) lines.push([A, 40, A, 60]);
-    return lines;
+  // colors: { faceName: color | { part: color, "*": color } }
+  function buildSq1(root, colors) {
+    Object.keys(FACE_PARTS).forEach(function (name) {
+      var spec = colors[name];
+      var colorOf = typeof spec === "string"
+        ? function () { return spec; }
+        : function (part) { return spec[part] || spec["*"]; };
+      var face = el("div", "face face--" + name + " sq1__face");
+      face.appendChild(faceSvg(FACE_PARTS[name], colorOf));
+      root.appendChild(face);
+    });
   }
 
   function buildHero() {
     var root = document.getElementById("sq1");
     if (!root) return;
-    var faces = [
-      { name: "top",    color: "var(--white)",  lines: capLines() },
-      { name: "bottom", color: "var(--yellow)", lines: capLines() },
-      { name: "front",  color: "var(--red)",    lines: sideLines(true) },
-      { name: "back",   color: "var(--orange)", lines: sideLines(true) },
-      { name: "right",  color: "var(--blue)",   lines: sideLines(false) },
-      { name: "left",   color: "var(--green)",  lines: sideLines(false) }
-    ];
-    faces.forEach(function (f) {
-      var face = el("div", "face face--" + f.name + " sq1__face");
-      face.appendChild(svg(f.lines, f.color));
-      root.appendChild(face);
+    buildSq1(root, {
+      top: "var(--white)", bottom: "var(--yellow)",
+      front: "var(--red)", back: "var(--orange)",
+      right: "var(--blue)", left: "var(--green)"
     });
   }
 
-  function buildMini() {
-    var wrap = el("div", "sq1-mini");
+  // Стъпка 1: сив пъзел, оранжев/зелен среден слой за ориентация,
+  // а двата десни ръба (горен и долен), които се разменят, са оцветени.
+  var GRAY = "var(--sq1-gray)";
+  var EDGE_SWAP_COLORS = {
+    top:    { "*": GRAY, "edge-right": "var(--yellow)" },
+    bottom: GRAY,
+    front:  { "*": GRAY, "mid-l": "var(--orange)", "mid-r": "var(--orange)" },
+    back:   GRAY,
+    right:  { "*": GRAY, "mid": "var(--green)", "top-edge": "var(--red)", "bot-edge": "var(--red)" },
+    left:   GRAY
+  };
+
+  // 3D модел, който се върти с мишката/пръста (и със стрелките от клавиатурата).
+  function buildViewer(colors) {
+    var wrap = el("div", "sq1-viewer");
+    wrap.tabIndex = 0;
     wrap.setAttribute("role", "img");
-    wrap.setAttribute("aria-label", "Square-1 във форма на куб, гледан отгоре");
-    wrap.appendChild(svg(capLines(), "var(--white)"));
+    wrap.setAttribute("aria-label", "3D Square-1. Влачи, за да го завъртиш.");
+    var cube = el("div", "cube3d sq1");
+    buildSq1(cube, colors);
+    wrap.appendChild(cube);
+    wrap.appendChild(el("span", "sq1-viewer__hint", "↻ влачи"));
+
+    var rx = -24, ry = -35, drag = null;
+    function apply() {
+      cube.style.transform = "rotateX(" + rx + "deg) rotateY(" + ry + "deg)";
+    }
+    function rotate(dx, dy) {
+      ry += dx;
+      rx = Math.max(-89, Math.min(89, rx - dy));
+      apply();
+    }
+
+    wrap.addEventListener("pointerdown", function (e) {
+      drag = { x: e.clientX, y: e.clientY };
+      wrap.setPointerCapture(e.pointerId);
+      wrap.classList.add("is-dragging");
+    });
+    wrap.addEventListener("pointermove", function (e) {
+      if (!drag) return;
+      rotate((e.clientX - drag.x) * 0.6, (e.clientY - drag.y) * 0.6);
+      drag = { x: e.clientX, y: e.clientY };
+    });
+    function end() { drag = null; wrap.classList.remove("is-dragging"); }
+    wrap.addEventListener("pointerup", end);
+    wrap.addEventListener("pointercancel", end);
+    wrap.addEventListener("keydown", function (e) {
+      var d = { ArrowLeft: [-10, 0], ArrowRight: [10, 0], ArrowUp: [0, -10], ArrowDown: [0, 10] }[e.key];
+      if (!d) return;
+      e.preventDefault();
+      rotate(d[0], d[1]);
+    });
+
+    apply();
     return wrap;
   }
 
@@ -116,6 +187,6 @@
     storageKey: STORAGE_KEY,
     tokenize: tokenize,
     describe: describeMove,
-    buildVisual: buildMini
+    buildVisual: function () { return buildViewer(EDGE_SWAP_COLORS); }
   });
 })();
