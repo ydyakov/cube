@@ -12,6 +12,8 @@
   --green: #36b864;
   --yellow: #f2c230;
   --red: #e2433b;
+  --orange: #f28a2e;
+  --white: #f4f2f7;
   --chip: #efeaf8;
   --chip-active: #5b3a96;
   --chip-active-text: #ffffff;
@@ -221,6 +223,98 @@ a { color: inherit; }
   box-shadow: none;
 }
 .sticker { border-radius: 5px; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18); }
+
+/* 4×4 куб (кубчетата се позиционират от js/cube4.js с matrix3d) */
+.scene--big { width: 240px; height: 240px; perspective: 1000px; }
+.rcube {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  transform-style: preserve-3d;
+  animation: spin4 28s linear infinite;
+}
+@keyframes spin4 {
+  from { transform: rotateX(-26deg) rotateY(-35deg); }
+  to   { transform: rotateX(-26deg) rotateY(325deg); }
+}
+.rcube__pivot {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+.cubie {
+  position: absolute;
+  left: 90px;
+  top: 90px;
+  width: 60px;
+  height: 60px;
+  transform-style: preserve-3d;
+}
+.cubie__face {
+  position: absolute;
+  inset: 0;
+  background: #1a1226;
+  backface-visibility: hidden;
+}
+.cubie__face.has-sticker::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 7px;
+  background: var(--c);
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .16), inset 0 3px 0 rgba(255, 255, 255, .18);
+}
+.cubie__face--front  { transform: translateZ(30px); }
+.cubie__face--back   { transform: rotateY(180deg) translateZ(30px); }
+.cubie__face--right  { transform: rotateY(90deg) translateZ(30px); }
+.cubie__face--left   { transform: rotateY(-90deg) translateZ(30px); }
+.cubie__face--top    { transform: rotateX(90deg) translateZ(30px); }
+.cubie__face--bottom { transform: rotateX(-90deg) translateZ(30px); }
+
+/* ---------- Catalog (home) ---------- */
+.catalog {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(40px, 6vw, 72px) clamp(16px, 4vw, 48px);
+}
+.catalog__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+.card {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.card:hover { transform: translateY(-3px); border-color: var(--purple); }
+.card__visual--pocket {
+  flex: none;
+  width: 92px;
+  height: 92px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  background: #1a1226;
+  border-radius: 12px;
+}
+.card__visual--pocket .tile { border-radius: 6px; }
+.card__visual--pocket .tile--small { gap: 3px; padding: 3px; }
+.card__visual--pocket .sticker { border-radius: 3px; }
+.card__body { display: flex; flex-direction: column; gap: .2rem; }
+.card__body .eyebrow { margin: 0; font-size: .72rem; }
+.card__title { font-weight: 800; font-size: 1.15rem; line-height: 1.25; }
+.card__text { color: var(--muted); font-size: .92rem; }
+.card__cta { margin-top: .35rem; font-weight: 700; font-size: .9rem; color: var(--purple); }
 
 /* ---------- Notation ---------- */
 .notation, .puzzle {
@@ -468,8 +562,9 @@ a { color: inherit; }
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; text-align: left; }
   .hero__visual { min-height: 260px; order: -1; }
-  .scene, .cube3d { width: 160px; height: 160px; }
+  .scene:not(.scene--big), .cube3d { width: 160px; height: 160px; }
   .cube3d { --s: 160px; }
+  .scene--big { transform: scale(.78); }
 }
 
 @media (max-width: 600px) {
@@ -482,5 +577,10 @@ a { color: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
   .cube3d { animation: none; transform: rotateX(-24deg) rotateY(-35deg); }
+  .rcube { animation: none; transform: rotateX(-26deg) rotateY(-35deg); }
   html { scroll-behavior: auto; }
+}
+
+@media (max-width: 480px) {
+  .topbar__nav .nav-extra { display: none; }
 }

@@ -12,85 +12,68 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#top" aria-label="Начало">
+    <a class="brand" href="index.html" aria-label="Начало">
       <span class="brand__mark" aria-hidden="true"></span>
       Cube Formulas
     </a>
     <nav class="topbar__nav" aria-label="Секции">
-      <a href="#notation">Нотация</a>
-      <a href="#pocket-cube">Pocket Cube</a>
+      <a href="#puzzles">Пъзели</a>
     </nav>
   </header>
 
-  <main id="top">
-    <!-- Landing -->
+  <main>
     <section class="hero">
       <div class="hero__text">
         <p class="eyebrow">Формули за пъзел кубчета</p>
         <h1>Подреди кубчето<br><span class="accent">стъпка по стъпка</span></h1>
         <p class="lead">
-          Събрани алгоритми за кубчета, подобни на Рубик куба. Всеки ход е обяснен,
-          а режимът „Упражнявай“ те води ход по ход.
+          Събрани алгоритми за кубчета, подобни на Рубик куба. Избери пъзел.
+          Всеки ход е обяснен, а режимът „Упражнявай“ те води ход по ход.
         </p>
         <div class="hero__actions">
-          <a class="btn btn--primary" href="#pocket-cube">Започни с Pocket Cube</a>
-          <a class="btn btn--ghost" href="#notation">Как се чете нотацията</a>
+          <a class="btn btn--primary" href="#puzzles">Избери пъзел</a>
         </div>
       </div>
 
       <div class="hero__visual" aria-hidden="true">
-        <div class="scene">
-          <div class="cube3d" id="cube3d"></div>
+        <div class="scene scene--big">
+          <div class="rcube" id="cube4"></div>
         </div>
       </div>
     </section>
 
-    <!-- Notation -->
-    <section class="notation" id="notation">
-      <h2>Нотация</h2>
-      <p class="section-lead">
-        Всяка буква е завъртане на една страна по часовниковата стрелка, гледано срещу тази страна.
-      </p>
-      <div class="notation__grid">
-        <div class="note"><b>R</b><span>дясна</span></div>
-        <div class="note"><b>L</b><span>лява</span></div>
-        <div class="note"><b>U</b><span>горна</span></div>
-        <div class="note"><b>D</b><span>долна</span></div>
-        <div class="note"><b>F</b><span>предна</span></div>
-        <div class="note"><b>B</b><span>задна</span></div>
-        <div class="note note--mod"><b>X'</b><span>обратно на часовниковата стрелка</span></div>
-        <div class="note note--mod"><b>X2</b><span>двойно завъртане (180°)</span></div>
-      </div>
-    </section>
+    <section class="catalog" id="puzzles">
+      <h2>Пъзели</h2>
+      <p class="section-lead">Ръководства за подреждане. Ще добавяме още.</p>
 
-    <!-- Pocket Cube -->
-    <section class="puzzle" id="pocket-cube">
-      <div class="puzzle__head">
-        <div>
-          <p class="eyebrow">Пъзел 01</p>
-          <h2>Pocket Cube | Puppet 2 Cube</h2>
-          <p class="section-lead">
-            Четирицветният Pocket Cube на Meffert. Подреждането става в 4 стъпки.
-            Алгоритмите са от SuperAntoniovivaldi.
-          </p>
-        </div>
-        <div class="progress" aria-live="polite">
-          <div class="progress__bar"><span id="progressFill"></span></div>
-          <span id="progressText">0 / 4 стъпки</span>
-          <button class="link-btn" id="resetProgress" type="button">Изчисти</button>
-        </div>
+      <div class="catalog__grid">
+        <a class="card" href="pocket-cube.html">
+          <span class="card__visual card__visual--pocket" aria-hidden="true">
+            <span class="tile"></span>
+            <span class="tile tile--small">
+              <span class="sticker" style="background: var(--blue)"></span>
+              <span class="sticker" style="background: var(--green)"></span>
+              <span class="sticker" style="background: var(--yellow)"></span>
+              <span class="sticker" style="background: var(--red)"></span>
+            </span>
+            <span class="tile"></span>
+            <span class="tile"></span>
+          </span>
+          <span class="card__body">
+            <span class="eyebrow">Пъзел 01 · 4 стъпки</span>
+            <span class="card__title">Pocket Cube | Puppet 2 Cube</span>
+            <span class="card__text">Четирицветният Pocket Cube на Meffert.</span>
+            <span class="card__cta">Към ръководството →</span>
+          </span>
+        </a>
       </div>
-
-      <ol class="steps" id="steps"></ol>
     </section>
   </main>
 
   <footer class="footer">
-    <p>Алгоритми за Pocket Cube: SuperAntoniovivaldi · Наръчник: toonwa</p>
+    <p>Cube Formulas</p>
   </footer>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-  <script src="js/main.js"></script>
+  <script src="js/cube4.js"></script>
 </body>
 </html>

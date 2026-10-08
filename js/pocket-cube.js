@@ -141,29 +141,35 @@
     return tile;
   }
 
-  function buildFace(className, colors, highlight) {
+  // smallAt: в кой квадрант (0 горе-ляво … 3 долу-дясно) са малките парчета; -1 = няма.
+  function buildFace(className, colors, smallAt, highlight) {
     var face = el("div", className);
-    face.appendChild(el("div", "tile"));
-    face.appendChild(smallTile(colors, highlight)); // горе вдясно
-    face.appendChild(el("div", "tile"));
-    face.appendChild(el("div", "tile"));
+    for (var q = 0; q < 4; q++) {
+      face.appendChild(q === smallAt ? smallTile(colors, highlight) : el("div", "tile"));
+    }
     return face;
   }
 
+  // Малките парчета са само в един ъгъл на кубчето: горе-отпред-вдясно.
+  // Квадрантите са избрани така, че трите страни да се срещат в този ъгъл.
   function buildHeroCube() {
     var cube = document.getElementById("cube3d");
     if (!cube) return;
-    var faces = {
-      front: "bbbb", right: "gggg", back: "yyyy",
-      left: "rrrr", top: "bgyr", bottom: "rygb"
-    };
-    Object.keys(faces).forEach(function (name) {
-      cube.appendChild(buildFace("face face--" + name, faces[name], false));
+    var faces = [
+      { name: "front",  colors: "bbbb", smallAt: 1 },
+      { name: "right",  colors: "gggg", smallAt: 0 },
+      { name: "top",    colors: "yyyy", smallAt: 3 },
+      { name: "back",   smallAt: -1 },
+      { name: "left",   smallAt: -1 },
+      { name: "bottom", smallAt: -1 }
+    ];
+    faces.forEach(function (f) {
+      cube.appendChild(buildFace("face face--" + f.name, f.colors || "", f.smallAt, false));
     });
   }
 
   function buildMini(mini) {
-    var wrap = buildFace("mini", mini.colors, mini.highlight);
+    var wrap = buildFace("mini", mini.colors, 1, mini.highlight);
     wrap.setAttribute("role", "img");
     wrap.setAttribute("aria-label", "Предна страна: малките парчета са в горния десен ъгъл");
     wrap.appendChild(el("span", "mini__label mini__label--f", "F"));
