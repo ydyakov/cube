@@ -25,6 +25,16 @@
       ],
       model: "cornerPerm",
       hint: "Накрая кубчето е отново във форма на куб."
+    },
+    {
+      title: "Пермутация на два ръба",
+      text: "Разменя два ръба. " +
+            "<strong>Започни с кубчето във форма на куб, ориентирано като на модела</strong> " +
+            "(бялото отгоре, оранжевото отпред, зеленото отдясно).",
+      algos: [
+        { label: "Алгоритъм", moves: "(-2,0) / (3,0) / (-1,-1) / (-2,1) /" }
+      ],
+      model: "edgePerm"
     }
   ];
 
@@ -160,6 +170,15 @@
       back:   GRAY,
       right:  { "*": GRAY, "mid": "var(--green)", "top-l": "var(--blue)" },
       left:   { "*": GRAY, "top-r": "var(--red)" }
+    },
+    // цветен пъзел: двата ръба с червено отгоре и синьото долу вдясно
+    edgePerm: {
+      top:    { "*": "var(--white)", "edge-back": "var(--red)", "edge-right": "var(--red)" },
+      bottom: "var(--yellow)",
+      front:  "var(--orange)",
+      back:   "var(--red)",
+      right:  { "*": "var(--green)", "bot-edge": "var(--blue)" },
+      left:   "var(--blue)"
     }
   };
 
