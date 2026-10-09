@@ -656,3 +656,16 @@ a { color: inherit; }
 
 .resource { margin: .75rem 0 0; font-size: .92rem; color: var(--muted); }
 .resource a { color: var(--purple); font-weight: 700; }
+
+/* Pocket Cube: допълнителни алгоритми */
+.puzzle--extra { padding-top: 0; }
+.mini--swap .tile.is-hl { outline: 3px solid var(--red); outline-offset: -1px; }
+.mini__arrow {
+  position: absolute;
+  inset: 4px;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  pointer-events: none;
+}
+.mini__arrow line { stroke: #fff; stroke-width: 6; stroke-linecap: round; }
+.mini__arrow path { fill: #fff; }

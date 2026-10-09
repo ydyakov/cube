@@ -166,15 +166,20 @@
   // opts: {
   //   root, steps, storageKey,
   //   tokenize(movesString) -> [token], describe(token) -> string, joiner,
-  //   buildVisual(step) -> Node (по избор)
+  //   buildVisual(step) -> Node (по избор),
+  //   progress: false -> без отметки „готово“ и без брояч (по подразбиране true),
+  //   number(i) -> етикет на стъпката (по подразбиране 1, 2, 3…)
   // }
   function renderSteps(opts) {
     var root = opts.root;
     if (!root) return;
     opts.joiner = opts.joiner || " ";
-    var done = readJSON(opts.storageKey);
+    var withProgress = opts.progress !== false;
+    var number = opts.number || function (i) { return String(i + 1); };
+    var done = withProgress ? readJSON(opts.storageKey) : {};
 
     function updateProgress() {
+      if (!withProgress) return;
       var fill = document.getElementById("progressFill");
       var text = document.getElementById("progressText");
       if (!fill || !text) return;
@@ -189,7 +194,7 @@
       var item = el("li", "step");
 
       var aside = el("div", "step__aside");
-      aside.appendChild(el("span", "step__num", String(i + 1)));
+      aside.appendChild(el("span", "step__num", number(i)));
       if (opts.buildVisual) aside.appendChild(opts.buildVisual(step));
 
       var body = el("div", "step__body");
@@ -197,6 +202,11 @@
       body.appendChild(el("p", null, step.text));
       step.algos.forEach(function (a) { body.appendChild(buildAlgo(a, opts)); });
       if (step.hint) body.appendChild(el("p", "hint", step.hint));
+
+      item.appendChild(aside);
+      item.appendChild(body);
+      root.appendChild(item);
+      if (!withProgress) return;
 
       var label = el("label", "step__done");
       var box = document.createElement("input");
@@ -214,14 +224,10 @@
         item.classList.toggle("is-done", box.checked);
         updateProgress();
       });
-
-      item.appendChild(aside);
-      item.appendChild(body);
-      root.appendChild(item);
     });
 
     var reset = document.getElementById("resetProgress");
-    if (reset) {
+    if (reset && withProgress) {
       reset.addEventListener("click", function () {
         writeJSON(opts.storageKey, {});
         root.querySelectorAll(".step").forEach(function (item) {

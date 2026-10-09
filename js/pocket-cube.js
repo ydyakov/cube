@@ -65,6 +65,18 @@
     }
   ];
 
+  // Допълнителни алгоритми извън четирите стъпки.
+  var EXTRA_ALGOS = [
+    {
+      title: "Размяна на горния ляв с долния десен ъгъл",
+      text: "Разменя двете големи ъглови парчета, оградени на картинката: " +
+            "<strong>горе вляво</strong> и <strong>долу вдясно</strong> на предната страна.",
+      algos: [
+        { label: "Алгоритъм", moves: "U2 R U' R' U2 R' U' R U R' U' R' B' R2 B R" }
+      ]
+    }
+  ];
+
   var STORAGE_KEY = "cube-formulas:pocket-cube:done";
 
   var el = CubeGuide.el;
@@ -125,6 +137,31 @@
     return wrap;
   }
 
+  var NS = "http://www.w3.org/2000/svg";
+
+  // Предна страна само с големи парчета; двата ъгъла за размяна са оградени и свързани със стрелка.
+  function buildSwapMini() {
+    var wrap = el("div", "mini mini--swap");
+    wrap.setAttribute("role", "img");
+    wrap.setAttribute("aria-label", "Предна страна: горният ляв и долният десен ъгъл се разменят");
+    for (var q = 0; q < 4; q++) {
+      wrap.appendChild(el("div", "tile" + (q === 0 || q === 3 ? " is-hl" : "")));
+    }
+    var svg = document.createElementNS(NS, "svg");
+    svg.setAttribute("class", "mini__arrow");
+    svg.setAttribute("viewBox", "0 0 100 100");
+    svg.innerHTML =
+      "<defs><marker id=\"swap-head\" viewBox=\"0 0 10 10\" refX=\"5\" refY=\"5\" " +
+      "markerWidth=\"4\" markerHeight=\"4\" orient=\"auto-start-reverse\">" +
+      "<path d=\"M0 0 L10 5 L0 10 z\"/></marker></defs>" +
+      "<line x1=\"30\" y1=\"30\" x2=\"70\" y2=\"70\" " +
+      "marker-start=\"url(#swap-head)\" marker-end=\"url(#swap-head)\"/>";
+    wrap.appendChild(svg);
+    wrap.appendChild(el("span", "mini__label mini__label--f", "F"));
+    wrap.appendChild(el("span", "mini__label mini__label--r", "R"));
+    return wrap;
+  }
+
   buildHeroCube();
   CubeGuide.renderSteps({
     root: document.getElementById("steps"),
@@ -133,5 +170,14 @@
     tokenize: function (s) { return s.trim().split(/\s+/); },
     describe: describeMove,
     buildVisual: function (step) { return buildMini(step.mini); }
+  });
+  CubeGuide.renderSteps({
+    root: document.getElementById("extras"),
+    steps: EXTRA_ALGOS,
+    progress: false,
+    number: function (i) { return String.fromCharCode(65 + i); }, // A, B, C…
+    tokenize: function (s) { return s.trim().split(/\s+/); },
+    describe: describeMove,
+    buildVisual: buildSwapMini
   });
 })();
