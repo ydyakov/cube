@@ -669,3 +669,25 @@ a { color: inherit; }
 }
 .mini__arrow line { stroke: #fff; stroke-width: 6; stroke-linecap: round; }
 .mini__arrow path { fill: #fff; }
+
+/* ---------- Breadcrumb ---------- */
+.breadcrumb {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.25rem clamp(16px, 4vw, 48px) 0;
+  font-size: .88rem;
+}
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.breadcrumb li { display: flex; align-items: center; gap: .4rem; color: var(--muted); }
+.breadcrumb li + li::before { content: "›"; color: var(--border); font-weight: 800; }
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--purple); text-decoration: underline; }
+.breadcrumb [aria-current="page"] { color: var(--text); font-weight: 700; }
+.breadcrumb + .hero { padding-top: clamp(28px, 5vw, 64px); }
