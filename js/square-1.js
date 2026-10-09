@@ -187,49 +187,10 @@
     }
   };
 
-  // 3D модел, който се върти с мишката/пръста (и със стрелките от клавиатурата).
   function buildViewer(colors) {
-    var wrap = el("div", "sq1-viewer");
-    wrap.tabIndex = 0;
-    wrap.setAttribute("role", "img");
-    wrap.setAttribute("aria-label", "3D Square-1. Влачи, за да го завъртиш.");
     var cube = el("div", "cube3d sq1");
     buildSq1(cube, colors);
-    wrap.appendChild(cube);
-    wrap.appendChild(el("span", "sq1-viewer__hint", "↻ влачи"));
-
-    var rx = -24, ry = -35, drag = null;
-    function apply() {
-      cube.style.transform = "rotateX(" + rx + "deg) rotateY(" + ry + "deg)";
-    }
-    function rotate(dx, dy) {
-      ry += dx;
-      rx = Math.max(-89, Math.min(89, rx - dy));
-      apply();
-    }
-
-    wrap.addEventListener("pointerdown", function (e) {
-      drag = { x: e.clientX, y: e.clientY };
-      wrap.setPointerCapture(e.pointerId);
-      wrap.classList.add("is-dragging");
-    });
-    wrap.addEventListener("pointermove", function (e) {
-      if (!drag) return;
-      rotate((e.clientX - drag.x) * 0.6, (e.clientY - drag.y) * 0.6);
-      drag = { x: e.clientX, y: e.clientY };
-    });
-    function end() { drag = null; wrap.classList.remove("is-dragging"); }
-    wrap.addEventListener("pointerup", end);
-    wrap.addEventListener("pointercancel", end);
-    wrap.addEventListener("keydown", function (e) {
-      var d = { ArrowLeft: [-10, 0], ArrowRight: [10, 0], ArrowUp: [0, -10], ArrowDown: [0, 10] }[e.key];
-      if (!d) return;
-      e.preventDefault();
-      rotate(d[0], d[1]);
-    });
-
-    apply();
-    return wrap;
+    return CubeGuide.viewer(cube, { label: "3D Square-1. Влачи, за да го завъртиш." });
   }
 
   buildHero();

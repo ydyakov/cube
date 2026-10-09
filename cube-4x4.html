@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>4x4 Cube Parity</title>
+  <meta name="description" content="Алгоритми за излизане от паритет на 4×4 куб.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html" aria-label="Към началната страница">
+      <span class="brand__mark" aria-hidden="true"></span>
+      Cube Formulas
+    </a>
+    <nav class="topbar__nav" aria-label="Секции">
+      <a href="index.html#puzzles">← Всички пъзели</a>
+      <a class="nav-extra" href="#notation">Нотация</a>
+      <a class="nav-extra" href="#steps">Паритети</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <nav class="breadcrumb" aria-label="Навигационна пътека">
+      <ol>
+        <li><a href="index.html">Начало</a></li>
+        <li><a href="index.html#puzzles">Пъзели</a></li>
+        <li><span aria-current="page">4×4 куб</span></li>
+      </ol>
+    </nav>
+
+    <section class="hero hero--puzzle">
+      <div class="hero__text">
+        <p class="eyebrow">Пъзел 03</p>
+        <h1>4×4 куб<br><span class="accent">Паритети</span></h1>
+        <p class="lead">
+          Случаи, които не се срещат на 3×3 куба. Тук са алгоритмите за излизане от тях.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#steps">Към паритетите</a>
+          <a class="btn btn--ghost" href="#notation">Как се чете нотацията</a>
+        </div>
+      </div>
+
+      <div class="hero__visual" aria-hidden="true">
+        <div class="scene scene--big">
+          <div class="rcube" id="cube4"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="notation" id="notation">
+      <h2>Нотация</h2>
+      <p class="section-lead">
+        Главните букви са външните страни, както при 3×3. Малките букви са вътрешните слоеве.
+        Стрелката показва накъде се движи предната страна на слоя.
+      </p>
+      <div class="notation__grid">
+        <div class="note"><b>U</b><span>горна страна</span></div>
+        <div class="note"><b>F</b><span>предна страна</span></div>
+        <div class="note"><b>r</b><span>вътрешен десен слой</span></div>
+        <div class="note"><b>l</b><span>вътрешен ляв слой</span></div>
+        <div class="note note--mod"><b>↑</b><span>слоят се движи нагоре</span></div>
+        <div class="note note--mod"><b>↓</b><span>слоят се движи надолу</span></div>
+        <div class="note note--mod"><b>X2</b><span>двойно завъртане (180°)</span></div>
+      </div>
+    </section>
+
+    <section class="puzzle" id="cube-4x4">
+      <div class="puzzle__head">
+        <div>
+          <h2>Паритети</h2>
+          <p class="section-lead">
+            Дръж кубчето така, както е на модела. Отбелязаното се пази в този браузър.
+          </p>
+        </div>
+        <div class="progress" aria-live="polite">
+          <div class="progress__bar"><span id="progressFill"></span></div>
+          <span id="progressText">0 / 1 стъпка</span>
+          <button class="link-btn" id="resetProgress" type="button">Изчисти</button>
+        </div>
+      </div>
+
+      <ol class="steps" id="steps"></ol>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Cube Formulas</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/guide.js"></script>
+  <script src="js/cube4.js"></script>
+  <script src="js/cube-4x4.js"></script>
+</body>
+</html>

@@ -241,5 +241,55 @@
     updateProgress();
   }
 
-  window.CubeGuide = { el: el, renderSteps: renderSteps };
+  /* ---------- 3D модел, който се върти с мишката ---------- */
+
+  // Обвива 3D елемент (.cube3d) в рамка, която го върти при влачене с мишката/пръста
+  // и със стрелките от клавиатурата.
+  // opts: { label, hint, className, rx, ry } (rx/ry са началните ъгли в градуси).
+  function viewer(model, opts) {
+    opts = opts || {};
+    var wrap = el("div", "viewer" + (opts.className ? " " + opts.className : ""));
+    wrap.tabIndex = 0;
+    wrap.setAttribute("role", "img");
+    wrap.setAttribute("aria-label", opts.label || "3D модел. Влачи, за да го завъртиш.");
+    wrap.appendChild(model);
+    wrap.appendChild(el("span", "viewer__hint", opts.hint || "↻ влачи"));
+
+    var rx = opts.rx != null ? opts.rx : -24;
+    var ry = opts.ry != null ? opts.ry : -35;
+    var drag = null;
+    function apply() {
+      model.style.transform = "rotateX(" + rx + "deg) rotateY(" + ry + "deg)";
+    }
+    function rotate(dx, dy) {
+      ry += dx;
+      rx = Math.max(-89, Math.min(89, rx - dy));
+      apply();
+    }
+
+    wrap.addEventListener("pointerdown", function (e) {
+      drag = { x: e.clientX, y: e.clientY };
+      wrap.setPointerCapture(e.pointerId);
+      wrap.classList.add("is-dragging");
+    });
+    wrap.addEventListener("pointermove", function (e) {
+      if (!drag) return;
+      rotate((e.clientX - drag.x) * 0.6, (e.clientY - drag.y) * 0.6);
+      drag = { x: e.clientX, y: e.clientY };
+    });
+    function end() { drag = null; wrap.classList.remove("is-dragging"); }
+    wrap.addEventListener("pointerup", end);
+    wrap.addEventListener("pointercancel", end);
+    wrap.addEventListener("keydown", function (e) {
+      var d = { ArrowLeft: [-10, 0], ArrowRight: [10, 0], ArrowUp: [0, -10], ArrowDown: [0, 10] }[e.key];
+      if (!d) return;
+      e.preventDefault();
+      rotate(d[0], d[1]);
+    });
+
+    apply();
+    return wrap;
+  }
+
+  window.CubeGuide = { el: el, renderSteps: renderSteps, viewer: viewer };
 })();
